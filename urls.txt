@@ -1,0 +1,4 @@
+admin
+ids_log
+CHANGELOG
+php.ini
