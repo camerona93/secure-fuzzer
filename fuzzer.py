@@ -7,7 +7,7 @@ parser = argparse.ArgumentParser(description='Security fuzzer')
 parser.add_argument('command', help='Fuzzer mode. Discover or Test', choices=('discover', 'test'))
 parser.add_argument('url', help='URL to fuzz')
 parser.add_argument('--custom-auth', help='Signal that the fuzzer should use hard-coded authentication for a specific application (e.g. dvwa). Optional',
-                    choices=('dvwa',), dest='auth')
+                    choices=('dvwa','bodgeit'), dest='auth')
 parser.add_argument('--common-words', help='Newline-delimited file of common words to be used in page guessing and input guessing. Required.',
                     required=True, dest='word_file')
 
@@ -50,6 +50,10 @@ def login(session, site):
     if site == 'dvwa':
         r = session.post('http://127.0.0.1/dvwa/login.php', {'username' : 'admin', 'password' : 'password', 'Login' : 'Login'})
         assert not r.url.endswith('login.php')
+    elif site == 'bodgeit':
+        # user1@thebodgeitstore.com = H:dvLUD:DI
+        # admin@thebodgeitstore.com = ?yJxP?A=Kovsh6
+        # test@thebodgeitstore.com = password        r = session.post('http://127.0.0.1:8080/bodgeit/login.jsp', {'username' : 'admin@thebodgeitstore.com', 'password' : '?yJxP?A=Kovsh6'})
 
     assert r.status_code == requests.codes.okay
 #end def
