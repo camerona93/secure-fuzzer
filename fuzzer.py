@@ -1,4 +1,5 @@
 ﻿import argparse, requests
+from inputs.cookies.MemoryCookieJar import MemoryCookieJar
 from pagediscover.guessing import guesser
 
 parser = argparse.ArgumentParser(description='Security fuzzer')
@@ -17,13 +18,30 @@ def main():
 
     # set up session
     print('Creating Session...')
-    s = requests.Session()
-    if args.auth is not None: login(s, args.auth)
+    session = requests.Session()
+    session.cookies = MemoryCookieJar()
+
+    if args.auth is not None: login(session, args.auth)
+
+    ### Try to discover linked-to pages here
+    found = set()
+    # found = crawl(session, ...)
+    # found should be a set()
 
     print('Trying to guess additional pages...')
     with open(args.word_file, 'rU') as wf:
-        found = guesser.guess(s, args.url, wf)
-        for f in found: print(f)
+        found = guesser.guess(session, args.url, wf)
+    #end with
+
+    print('{n} accesible pages discovered:'.format(n=len(found)))
+    for page in sorted(found):
+        print("\t" + page)
+
+    print
+
+    print('{n} cookies found:'.format(n=len(session.cookies.memory)))
+    for cookie in session.cookies.memory:
+        print("\t" + str(cookie))
     
 #end def
 
