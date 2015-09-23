@@ -1,4 +1,1 @@
-admin
-ids_log
-CHANGELOG
-php.ini
+adminids_logCHANGELOGphp.ini
