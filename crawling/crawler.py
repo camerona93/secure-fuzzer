@@ -1,6 +1,9 @@
 #from requests.auth import HTTPBasicAuth
 import re
-from urllib.parse import urlparse
+import urllib.request
+import urllib.error
+import requests
+
 
 '''
 linkArray= []
@@ -18,29 +21,22 @@ def grabRequstOfSite(url):
     return urlRequest
 '''
 
-def crawl( session, maxLevel):
-    link_re = re.compile(r'href="(.*?)"')
-    urls=[] #TODO: This needs to be a set
-    if (maxLevel == 0):
-        return urls
-    url = link_re.findall(session)
-    for link in url:
-        link = urlparse.urljoin(session,i)
-        urls += crawl(link, maxLevel-1)
-    
-    
-    return urls
-    
-    
-'''        
-def auth_On_Off():
-    if (Auth == False):
-        Auth = True
-    else
-        Auth = False;
-    
-'''
 
-# stuff = crawl('https://www.google.com/?gws_rd=ssl',2)
-# for i in stuff:
-#     print (i)
+def crawl(url,maxlevel):
+    link_re =re.compile(r'href="(.?)"')
+    if (maxlevel==0):
+        return
+    req = requests.get(url)
+    result=[]
+    links = link_re.findall(req.text)
+    for link in links:
+        link = urlparse.urljoin(url,link)
+        result += crawl(link, maxlevel-1)
+
+    return result
+    
+    
+    
+
+stuff= crawl("http://127.0.0.1:8080/bodgeit/",3)
+print(stuff)
