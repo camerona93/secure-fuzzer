@@ -4,6 +4,8 @@ import requests
 from html.parser import HTMLParser
 import json
 
+global htmlParserReport;
+
 # Takes a url and returns a dictionary containing key/value pairs
 # representing the query string parameters provided in the url.
 def parseURLForInput (url):
@@ -36,7 +38,8 @@ def arePagesSame(url1, url2):
 class FormHTMLParser(HTMLParser):
 	# result will look like:
 	#	[(actionPage<"loginPage.jsp">, method<"get"/"post">, inputs<["username","password"]>), ...]
-	result = []
+	global htmlParserReport
+	htmlParserReport = []
 	inputs = []
 
 	actionPage = None
@@ -48,6 +51,7 @@ class FormHTMLParser(HTMLParser):
 		
 
 	def handle_starttag(self, tag, attrs):
+		global htmlParserReport
 		if (tag == "form"):
 			self.lookingForInput = True
 			# Check for actions and methods
@@ -67,35 +71,38 @@ class FormHTMLParser(HTMLParser):
 						self.inputs.append(item[1])
 
 	def handle_endtag(self, tag):
+		global htmlParserReport
 		if (tag == "html"):
 			# Finished scraping
 			if (len(self.inputs) > 0):
 				tup = (self.actionPage, self.method, self.inputs)
-				self.result.append(tup)
-			print(json.dumps(self.result, indent=2))
-			# TODO: What do we want to do with the result?
+				htmlParserReport.append(tup)
 		elif (tag == "form"):
 			# Finished with our form
 			self.lookingForInput = False
 			if (len(self.inputs) > 0):
 				tup = (self.actionPage, self.method, self.inputs)
-				self.result.append(tup)
+				htmlParserReport.append(tup)
 				self.actionPage = None
 				self.method = None
 				self.inputs = []
 		#handle end form tag
 
-def getFormFields(url):
+def getFormFields(session, url):
+	global htmlParserReport
 	parse = FormHTMLParser()
-	page = requests.get(url)
+	page = session.get(url)
 	parse.feed(page.text)
+	result = [] + htmlParserReport
+	htmlParserReport = []
+	return result
 
 
-result = parseURLForInput("http://www.google.com/?b=thing&j=3")
-print ("Fuzzable inputs: " + json.dumps(result, indent=2))
+# result = parseURLForInput("http://www.google.com/?b=thing&j=3")
+# print ("Fuzzable inputs: " + json.dumps(result, indent=2))
 
 
-areSame = arePagesSame("http://www.google.com/?bitches=shit", "http://www.google.com/")
-print ("Are the pages the same? " + ("Yes" if areSame else "No"))
+# areSame = arePagesSame("http://www.google.com/?bitches=shit", "http://www.google.com/")
+# print ("Are the pages the same? " + ("Yes" if areSame else "No"))
 
-getFormFields("http://127.0.0.1/dvwa/login.php")
+# getFormFields("http://127.0.0.1/dvwa/login.php")

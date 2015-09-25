@@ -20,7 +20,7 @@ def grabRequstOfSite(url):
 
 def crawl( session, maxLevel):
     link_re = re.compile(r'href="(.*?)"')
-    urls=[]
+    urls=[] #TODO: This needs to be a set
     if (maxLevel == 0):
         return urls
     url = link_re.findall(session)
@@ -41,6 +41,6 @@ def auth_On_Off():
     
 '''
 
-stuff = crawl('https://www.google.com/?gws_rd=ssl',2)
-for i in stuff:
-    print (i)
+# stuff = crawl('https://www.google.com/?gws_rd=ssl',2)
+# for i in stuff:
+#     print (i)

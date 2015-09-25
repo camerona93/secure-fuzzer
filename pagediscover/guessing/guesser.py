@@ -5,6 +5,10 @@ common_ext = { '', '.html', '.htm', '.xhtml', '.php', '.jsp', '.asp', '.aspx', '
 
 def guess(session, base_url, word_list, found=set()):
     if base_url[-1] != '/': base_url += '/'
+
+    baselive, baseurl = is_live(session, base_url)
+    if baselive and baseurl not in found: found.add(base_url)
+
     for word in word_list:
         word = word.rstrip()
         for ext in common_ext:
