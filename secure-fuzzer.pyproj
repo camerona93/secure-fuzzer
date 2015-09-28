@@ -26,7 +26,7 @@
     <Content Include="urls.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="crawling\crawler.py" />
+    <Compile Include="pagediscover\crawling\crawler.py" />
     <Compile Include="fuzzer.py" />
     <Compile Include="inputs\cookies\MemoryCookieJar.py">
       <SubType>Code</SubType>
@@ -39,12 +39,13 @@
     <Compile Include="inputs\__init__.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="pagediscover\crawling\__init__.py" />
     <Compile Include="pagediscover\guessing\guesser.py" />
     <Compile Include="pagediscover\guessing\__init__.py" />
     <Compile Include="pagediscover\__init__.py" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="crawling\" />
+    <Folder Include="pagediscover\crawling\" />
     <Folder Include="inputs\" />
     <Folder Include="inputs\cookies\" />
     <Folder Include="inputs\discover\" />
