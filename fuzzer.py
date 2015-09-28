@@ -28,6 +28,7 @@ def main():
 
     ### Try to discover linked-to pages here
     #TODO: This code will not execute, needs fixing.
+    print('Crawling for links')
     found = crawling.crawl(session, args.url)
 
     print('Trying to guess additional pages...')
