@@ -1,8 +1,9 @@
 ﻿import re
 import requests
 
+link_re = re.compile(r'href="(.?)"')
+
 def crawl(url, maxlevel):
-    link_re = re.compile(r'href="(.?)"')
     if (maxlevel == 0):
         return
     req = requests.get(url)
