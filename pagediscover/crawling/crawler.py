@@ -1,12 +1,11 @@
 ﻿import re
-import requests
 
 link_re = re.compile(r'href="(.?)"')
 
-def crawl(url, maxlevel):
+def crawl(session, url, maxlevel):
     if (maxlevel == 0):
         return
-    req = requests.get(url)
+    req = session.get(url)
     result = []
     links = link_re.findall(req.text)
     for link in links:
