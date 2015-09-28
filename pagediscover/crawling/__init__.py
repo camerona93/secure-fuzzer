@@ -1,1 +1,1 @@
-﻿from crawler import crawl
+﻿from .crawler import crawl
