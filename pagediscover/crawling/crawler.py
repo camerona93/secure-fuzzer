@@ -1,8 +1,6 @@
 ﻿import re
 import requests
 
-
-
 #linkArray= []
 #boolean Auth = True
 #
@@ -17,7 +15,6 @@ import requests
 #    indexURL = url;
 #    return urlRequest
 
-
 def crawl(url, maxlevel):
     link_re = re.compile(r'href="(.?)"')
     if (maxlevel == 0):
@@ -30,9 +27,6 @@ def crawl(url, maxlevel):
         result += crawl(link, maxlevel - 1)
 
     return result
-    
-    
-    
 
 stuff = crawl("http://127.0.0.1:8080/bodgeit/", 3)
 print(stuff)
