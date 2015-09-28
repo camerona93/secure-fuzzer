@@ -1,7 +1,4 @@
-#from requests.auth import HTTPBasicAuth
-import re
-import urllib.request
-import urllib.error
+﻿import re
 import requests
 
 
