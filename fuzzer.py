@@ -2,7 +2,7 @@
 from inputs.cookies.MemoryCookieJar import MemoryCookieJar
 from inputs.discover import parse_url
 from pagediscover.guessing import guesser
-from pagediscover.crawling import crawler
+from pagediscover import crawling
 
 
 parser = argparse.ArgumentParser(description='Security fuzzer')
