@@ -1,8 +1,8 @@
-import argparse, requests
+﻿import argparse, requests
 from inputs.cookies.MemoryCookieJar import MemoryCookieJar
 from inputs.discover import parse_url
 from pagediscover.guessing import guesser
-from crawling import crawler
+from pagediscover.crawling import crawler
 
 
 parser = argparse.ArgumentParser(description='Security fuzzer')
@@ -28,8 +28,7 @@ def main():
 
     ### Try to discover linked-to pages here
     #TODO: This code will not execute, needs fixing.
-    #found = crawler.crawl(session, 3)
-    found = set() # <-- remove when above line is working
+    found = crawl(session, args.url)
 
     print('Trying to guess additional pages...')
     with open(args.word_file, 'rU') as wf:
