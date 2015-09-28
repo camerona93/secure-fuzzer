@@ -12,6 +12,3 @@ def crawl(session, url, maxlevel, results=set()):
         results = results.union(crawl(link, maxlevel - 1))
 
     return results
-
-stuff = crawl("http://127.0.0.1:8080/bodgeit/", 3)
-print(stuff)
