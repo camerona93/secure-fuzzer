@@ -2,21 +2,21 @@
 import requests
 
 
-'''
-linkArray= []
-boolean Auth = True
 
-def grabRequstOfSite(url):
-    if (Auth == True):
-        if (url == 'http://127.0.0.1/dvwa/login.php'):
-            urlRequest = requests.get(url, auth=('admin','password'))
-        else if (url == 'http://127.0.0.1:8080/bodgeit/'):
-            urlRequest = requests.get(url, auth=('admin','password'))
-    else:
-        pass;
-    indexURL = url;
-    return urlRequest
-'''
+#linkArray= []
+#boolean Auth = True
+#
+#def grabRequstOfSite(url):
+#    if (Auth == True):
+#        if (url == 'http://127.0.0.1/dvwa/login.php'):
+#            urlRequest = requests.get(url, auth=('admin','password'))
+#        else if (url == 'http://127.0.0.1:8080/bodgeit/'):
+#            urlRequest = requests.get(url, auth=('admin','password'))
+#    else:
+#        pass;
+#    indexURL = url;
+#    return urlRequest
+
 
 
 def crawl(url,maxlevel):
