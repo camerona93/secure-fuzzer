@@ -5,8 +5,6 @@ try:
 except ImportError:
     from bs4 import BeautifulSoup, SoupStrainer 
 
-link_re = re.compile(r'href="(.?)"')
-
 def crawl(session, start_url, results=set()):
     can_url = urlparse(start_url)
 
