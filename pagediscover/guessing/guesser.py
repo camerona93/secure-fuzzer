@@ -1,22 +1,21 @@
 ﻿import requests
+from pagediscover.crawling import crawl
 
 notfound_codes = (requests.codes.no_response, requests.codes.not_found)
 common_ext = { '', '.html', '.htm', '.xhtml', '.php', '.jsp', '.asp', '.aspx', '.xml', '.pl', '.do', '.cgi', '.txt' }
 
-def guess(session, base_url, word_list, found=set()):
+def guess(session, base_url, word_list, pages):
     if base_url[-1] != '/': base_url += '/'
 
     baselive, baseurl = is_live(session, base_url)
-    if baselive and baseurl not in found: found.add(base_url)
+    if baselive: crawl(session, base_url, pages)
 
     for word in word_list:
         word = word.rstrip()
         for ext in common_ext:
             live, url = is_live(session, base_url + word + ext)
             #if live: print(url + ' ' + str(url in found))
-            if live and url not in found: found.add(url)
-
-    return found
+            if live: crawl(session, url, pages)
 #end def
 
 def is_live(session, url):

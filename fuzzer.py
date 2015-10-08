@@ -1,9 +1,17 @@
 ﻿import argparse, requests
 from inputs.cookies.MemoryCookieJar import MemoryCookieJar
-from inputs.discover import parse_url
 from pagediscover.guessing import guesser
 from pagediscover import crawling
+from page import PageCollection
 
+def t_or_f(arg):
+    ua = str(arg).upper()
+    if ua == 'TRUE'[:len(ua)]:
+       return True
+    elif ua == 'FALSE'[:len(ua)]:
+       return False
+    else:
+       pass  #error condition maybe?
 
 parser = argparse.ArgumentParser(description='Security fuzzer')
 
@@ -13,12 +21,30 @@ parser.add_argument('--custom-auth', help='Signal that the fuzzer should use har
                     choices=('dvwa','bodgeit'), dest='auth')
 parser.add_argument('--common-words', help='Newline-delimited file of common words to be used in page guessing and input guessing. Required.',
                     required=True, dest='word_file')
+parser.add_argument('--vectors', help='Newline-delimited file of common exploits to vulnerabilities. Required.',
+                    dest='vectors_file')
+parser.add_argument('--sensitive', help="Newline-delimited file data that should never be leaked. It's assumed that this data is in the application's database (e.g. test data), but is not reported in any response. Required.",
+                    dest='sensitive_file')
+parser.add_argument('--random',help='When off, try each input to each page systematically.  When on, choose a random page, then a random input field and test all vectors. Default: false.',
+                    type=t_or_f, default=False)
+parser.add_argument('--slow', help='Number of milliseconds considered when a response is considered "slow". Default is 500 milliseconds',
+                    type=int, default=500)
 
 def main():
     args = parser.parse_args()
 
+    if args.command == 'test':
+        assert args.vectors_file is not None
+        assert args.sensitive_file is not None
+
     print('Fuzzing ' + args.url + ' ...')
 
+    p = discover(args)
+    if args.command == 'test':
+        test(p, args)
+
+def discover(args):
+    print('DISCOVER')
     # set up session
     print('Creating Session...')
     session = requests.Session()
@@ -26,58 +52,39 @@ def main():
 
     if args.auth is not None: login(session, args.auth)
 
+    pages = PageCollection()
+
     ### Try to discover linked-to pages here
-    #TODO: This code will not execute, needs fixing.
     print('Crawling for links')
-    found = crawling.crawl(session, args.url)
+    crawling.crawl(session, args.url, pages)
 
     print('Trying to guess additional pages...')
     with open(args.word_file, 'rU') as wf:
-        found = found | guesser.guess(session, args.url, wf)
+        guesser.guess(session, args.url, wf, pages)
     #end with
 
+    found = pages.pages
+
     print('{n} accesible pages discovered:'.format(n=len(found)))
-    for page in sorted(found):
-        print("\t", page)    
-
-    print('Searching found pages for form data and inputs...')
-    result = []
-    for page in sorted(found):
-    #   [(url, [(actionPage<"loginPage.jsp">, method<"get"/"post">, inputs<["username","password"]>)), ...], 'a=b&c=d']
-        result.append((page, parse_url.getFormFields(session, page), parse_url.parseURLForInput(page)))
-    if (len(result) > 0):
-        print("The following inputs were discovered:")
-        for resultTuple in result:
-            print('URL: ', resultTuple[0])
-            print('=========')
-            if (len(resultTuple[1]) == 0 and len(resultTuple[2]) == 0):
-                print('No inputs discovered')
-            else:
-                if (len(resultTuple[2]) == 0):
-                    print('No query inputs discovered.')
-                else:
-                    print('Url inputs:', resultTuple[2])
-
-                if (len(resultTuple[1]) == 0):
-                    print('No form parameters discovered')
-                else:
-                    print('Form fields: (actionPage, method, inputs)')
-                    for inputTuple in resultTuple[1]:
-                        print(" # ", inputTuple)
-            print()
-    else:
-        print("No pages to search for form data.")
-
-
+    for key in sorted(found):
+        page = found[key]
+        print("\t" + page.url)
+        print("\t\tForm Inputs:")
+        for i in page.form_inputs:
+            print ("\t\t\t" + str(dict(i)));
+        print("\t\tURL Inputs:")
+        for i in page.url_inputs:
+            print ("\t\t\t" + str(i));
 
     print('{n} cookies found:'.format(n=len(session.cookies.memory)))
     for cookie in session.cookies.memory:
         print("\t" + str(cookie))
 
-
-    
+    return pages
 #end def
 
+def test(pages, args):
+    pass
 
 def login(session, site):
     if site == 'dvwa':

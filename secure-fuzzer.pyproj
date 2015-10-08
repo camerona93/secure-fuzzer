@@ -26,6 +26,9 @@
     <Content Include="urls.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="page.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="pagediscover\crawling\crawler.py" />
     <Compile Include="fuzzer.py" />
     <Compile Include="inputs\cookies\MemoryCookieJar.py">
@@ -34,8 +37,8 @@
     <Compile Include="inputs\cookies\__init__.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="inputs\discover\parse_url.py" />
-    <Compile Include="inputs\discover\__init__.py" />
+    <Compile Include="inputs\forms\forms.py" />
+    <Compile Include="inputs\forms\__init__.py" />
     <Compile Include="inputs\__init__.py">
       <SubType>Code</SubType>
     </Compile>
@@ -48,7 +51,7 @@
     <Folder Include="pagediscover\crawling\" />
     <Folder Include="inputs\" />
     <Folder Include="inputs\cookies\" />
-    <Folder Include="inputs\discover\" />
+    <Folder Include="inputs\forms\" />
     <Folder Include="pagediscover" />
     <Folder Include="pagediscover\guessing" />
   </ItemGroup>
