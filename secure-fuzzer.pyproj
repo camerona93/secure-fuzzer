@@ -46,8 +46,15 @@
     <Compile Include="pagediscover\guessing\guesser.py" />
     <Compile Include="pagediscover\guessing\__init__.py" />
     <Compile Include="pagediscover\__init__.py" />
+    <Compile Include="test\TestSession.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="test\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="test\" />
     <Folder Include="pagediscover\crawling\" />
     <Folder Include="inputs\" />
     <Folder Include="inputs\cookies\" />

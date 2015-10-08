@@ -3,6 +3,7 @@ from inputs.cookies.MemoryCookieJar import MemoryCookieJar
 from pagediscover.guessing import guesser
 from pagediscover import crawling
 from page import PageCollection
+from test.TestSession import TestSession
 
 def t_or_f(arg):
     ua = str(arg).upper()
@@ -84,7 +85,14 @@ def discover(args):
 #end def
 
 def test(pages, args):
-    pass
+    print('TEST')
+
+    # set up session
+    print('Creating Session...')
+    session = TestSession()
+
+    if args.auth is not None: login(session, args.auth)
+
 
 def login(session, site):
     if site == 'dvwa':
