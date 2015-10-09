@@ -61,8 +61,10 @@ def discover(args):
 
     print('Trying to guess additional pages...')
     with open(args.word_file, 'rU') as wf:
-        guesser.guess(session, args.url, wf, pages)
+        word_list = [x.strip('\n') for x in wf.readlines()]
     #end with
+    
+    guesser.guess(session, args.url, word_list, pages)
 
     found = pages.pages
 
@@ -81,7 +83,7 @@ def discover(args):
     for cookie in session.cookies.memory:
         print("\t" + str(cookie))
 
-    return pages
+    return list(found.values())
 #end def
 
 def test(pages, args):
@@ -89,9 +91,16 @@ def test(pages, args):
 
     # set up session
     print('Creating Session...')
-    session = TestSession()
+    with open(args.sensitive_file, 'rU') as f:
+        sensitive = [x.strip('\n') for x in f.readlines()]
+
+    session = TestSession(args.slow, sensitive)
 
     if args.auth is not None: login(session, args.auth)
+
+    # TODO: Calls to fuzz tester here
+    a = list(pages[0].aliases)[0]
+    session.get(a)
 
 
 def login(session, site):

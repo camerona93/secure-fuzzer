@@ -11,7 +11,6 @@ def guess(session, base_url, word_list, pages):
     if baselive: crawl(session, base_url, pages)
 
     for word in word_list:
-        word = word.rstrip()
         for ext in common_ext:
             live, url = is_live(session, base_url + word + ext)
             #if live: print(url + ' ' + str(url in found))
