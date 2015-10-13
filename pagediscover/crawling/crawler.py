@@ -16,6 +16,9 @@ def crawl(session, start_url, pages):
 
     while len(todo) != 0:
         url = todo.pop()
+
+        if 'logout' in url: continue # Terribly hacky wany to make fuzzer not log itself out
+
         page, created = pages.get_or_create(url)
 
         if (created or url not in page.aliases):
@@ -28,7 +31,12 @@ def crawl_page(session, can_url, url, todo, page):
     page.add_alias(url)
     req = session.get(url)
 
-    for link in BeautifulSoup(req.text, parse_only=SoupStrainer('a')):
+    print("\t" + req.url)
+
+    soup = BeautifulSoup(req.text, 'html.parser')
+
+
+    for link in soup.find_all('a'):
         if link.has_attr('href'):
             dest = urljoin(url, link['href'])
             href = urlparse(dest)
@@ -38,4 +46,4 @@ def crawl_page(session, can_url, url, todo, page):
             if dest not in todo:
                 todo.add(dest)
     
-    page.form_inputs.update(get_form_inputs(req.text))
+    page.form_inputs.update(get_form_inputs(soup))
