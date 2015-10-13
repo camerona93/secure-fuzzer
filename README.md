@@ -4,15 +4,18 @@ Fuzzer project for SE 331-01
 ## Running
 In order to run this project, you'll need a few python modules installed on your machine. These can be obtained using pip or easy_install if you don't have them. The required modules are:
  - `requests`
- - 'beautifulsoup4'
+ - `beautifulsoup4`
 
  The following are also required but should be standard with all Python installs:
  - `argparse`
- - `urllib` (Should be included with all python installations)
- - 'html' (Should be included with all python installations)
+ - `urllib`
+ - `html`
 
-To run the program, type `python fuzzer.py` from a terminal prompt in the project directory with your specified arguments. For help, type `python fuzzer.py -h`
-A good one to try is: `python fuzzer.py discover http://127.0.0.1/dvwa --custom-auth dvwa --common-words SecLists/Discovery/Web_content/apache.txt`
+To run the program, type `python fuzzer.py` from a terminal prompt in the project directory. For help, type `python fuzzer.py -h`.
+
+### Example usage:
+ - Discovery: `python fuzzer.py discover http://127.0.0.1/dvwa --custom-auth dvwa --common-words SecLists/Discovery/Web_content/apache.txt`
+ - Testing: `python fuzzer.py test http://127.0.0.1/dvwa/ --custom-auth=dvwa --common-words=urls.txt --vectors=vectors.txt --sensitive=sensitive.txt`
 
 ## SecLists
 To promote good development, we decided to make use of some lists compiled specifically for security/fuzzing. A GitHub project consiting of such lists is located at https://github.com/danielmiessler/SecLists. According to the readme,
