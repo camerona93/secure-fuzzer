@@ -13,6 +13,8 @@ In order to run this project, you'll need a few python modules installed on your
 
 To run the program, type `python fuzzer.py` from a terminal prompt in the project directory. For help, type `python fuzzer.py -h`.
 
+NOTE: The fuzzer has the ability to report what inputs it sends the server. This results in a large output, though, so it's off by default. To enable it, edit fuzzer.py and set `PRINT_TEST_INPUTS = True`
+
 ### Example usage:
  - Discovery: `python fuzzer.py discover http://127.0.0.1/dvwa --custom-auth dvwa --common-words SecLists/Discovery/Web_content/apache.txt`
  - Testing: `python fuzzer.py test http://127.0.0.1/dvwa/ --custom-auth=dvwa --common-words=urls.txt --vectors=vectors.txt --sensitive=sensitive.txt`

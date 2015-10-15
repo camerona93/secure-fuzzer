@@ -4,7 +4,9 @@ from pagediscover.guessing import guesser
 from pagediscover import crawling
 from page import PageCollection
 from test.TestSession import TestSession
-import itertools, html
+import itertools, html, random
+
+PRINT_TEST_INPUTS = False
 
 def t_or_f(arg):
     ua = str(arg).upper()
@@ -103,9 +105,14 @@ def test(pages, args):
 
     if args.auth is not None: login(session, args.auth)
 
-    for p in pages:
-        print('Fuzzing {url} ({n} requests)'.format(url=p.url, n=(len(p.form_inputs) + len(p.url_inputs)) * len(vectors)  * 2))
-        fuzz(session, p, sequential_fuzz(vectors))
+    if args.random:
+        p = random.choice(list(pages))
+        print('Randomly fuzzing {url}'.format(url=p.url))
+        fuzz(session, p, lambda n: random_fuzz(vectors, n))
+    else:
+        for p in pages:
+            print('Fuzzing {url}'.format(url=p.url))
+            fuzz(session, p, sequential_fuzz(vectors))
 
 def fuzz_internal(send, inputs, vectors_generator):
     '''Vectors generator generates an iterable of input tuples'''
@@ -113,6 +120,13 @@ def fuzz_internal(send, inputs, vectors_generator):
         dict = {}
         for i in range(len(inputs)):
             dict[inputs[i]] = vector_list[i]
+
+        if PRINT_TEST_INPUTS:
+            if len(dict) == 0:
+                print ('\tNo inputs to fuzz.')
+            else:
+                print ('\tInputs: ' + str(dict))
+
 
         res = send(dict)
 
@@ -130,11 +144,24 @@ def fuzz(session, page, vectors_generator):
     
     inputs.extend(page.url_inputs)
 
+    print('GET fuzzing')
     fuzz_internal(lambda x: session.get(url, params=x), inputs, vectors_generator) 
+    print('POST fuzzing')
     fuzz_internal(lambda x: session.post(url, x), inputs , vectors_generator) 
 
 def sequential_fuzz(vectors):
     return lambda x: itertools.product(vectors, repeat=x)
+
+def random_fuzz(vectors, n):
+    if n == 0:
+        return
+
+    v = [random.choice(vectors) for i in range(n)]
+    rnd = random.randint(0, n - 1)
+
+    for vec in vectors:
+        v[rnd] = vec
+        yield v
 
 def login(session, site):
     if site == 'dvwa':
