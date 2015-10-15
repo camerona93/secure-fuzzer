@@ -1,0 +1,4 @@
+<script>console.log('XSS');</script>
+' or 1=1 # 
+' # 
+submit

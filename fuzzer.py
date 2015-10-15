@@ -4,6 +4,7 @@ from pagediscover.guessing import guesser
 from pagediscover import crawling
 from page import PageCollection
 from test.TestSession import TestSession
+import itertools, html
 
 def t_or_f(arg):
     ua = str(arg).upper()
@@ -91,6 +92,10 @@ def test(pages, args):
 
     # set up session
     print('Creating Session...')
+    with open(args.vectors_file, 'rU') as f:
+        vectors = [x.strip('\n') for x in f.readlines()]
+    vectors.append('')
+
     with open(args.sensitive_file, 'rU') as f:
         sensitive = [x.strip('\n') for x in f.readlines()]
 
@@ -98,10 +103,38 @@ def test(pages, args):
 
     if args.auth is not None: login(session, args.auth)
 
-    # TODO: Calls to fuzz tester here
-    a = list(pages[0].aliases)[0]
-    session.get(a)
+    for p in pages:
+        print('Fuzzing {url} ({n} requests)'.format(url=p.url, n=(len(p.form_inputs) + len(p.url_inputs)) * len(vectors)  * 2))
+        fuzz(session, p, sequential_fuzz(vectors))
 
+def fuzz_internal(send, inputs, vectors_generator):
+    '''Vectors generator generates an iterable of input tuples'''
+    for vector_list in vectors_generator(len(inputs)):
+        dict = {}
+        for i in range(len(inputs)):
+            dict[inputs[i]] = vector_list[i]
+
+        res = send(dict)
+
+        for v in vector_list:
+            if v != html.escape(v) and v in res.text:
+                print('!!! ' + res.url + ' Unescaped vector found: ' + v)
+#end def
+
+def fuzz(session, page, vectors_generator):
+    url = 'http:' + page.url
+    inputs = []
+    for i in page.form_inputs:
+        d = dict(i)
+        if 'name' in d: inputs.append(d['name'])
+    
+    inputs.extend(page.url_inputs)
+
+    fuzz_internal(lambda x: session.get(url, params=x), inputs, vectors_generator) 
+    fuzz_internal(lambda x: session.post(url, x), inputs , vectors_generator) 
+
+def sequential_fuzz(vectors):
+    return lambda x: itertools.product(vectors, repeat=x)
 
 def login(session, site):
     if site == 'dvwa':

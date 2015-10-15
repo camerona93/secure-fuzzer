@@ -29,4 +29,4 @@ class TestSession(Session):
 
     def check_status_code(self, url, response):
         if response.status_code != http.client.OK:
-            print("!!! {url} returned non-200 status {status} ({human})".format(url=url, status=response.status_code, human=http.client.responses[request.staus_code]))
+            print("!!! {url} returned non-200 status {status} ({human})".format(url=url, status=response.status_code, human=http.client.responses[response.status_code]))

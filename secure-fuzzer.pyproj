@@ -13,7 +13,7 @@
     <LaunchProvider>Standard Python launcher</LaunchProvider>
     <InterpreterId />
     <InterpreterVersion />
-    <CommandLineArguments>discover http://127.0.0.1/dvwa/ --custom-auth=dvwa --common-words=urls.txt --vectors=foo --sensitive=sensitive.txt</CommandLineArguments>
+    <CommandLineArguments>test http://127.0.0.1:8080/bodgeit/ --custom-auth=bodgeit --common-words=urls.txt --vectors=vectors.txt --sensitive=sensitive.txt</CommandLineArguments>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />

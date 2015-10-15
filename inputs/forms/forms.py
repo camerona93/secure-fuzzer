@@ -2,9 +2,8 @@
     inputs = set()
 
     for input in soup.find_all('input'):
-        d = { 'type' : input['type'] }
+        d = { 'type' : input.get('type', 'text') }
         if input.has_attr('name'): d['name'] = input['name']
-        if input.has_attr('value'): d['value'] = input['value']
         inputs.add(frozenset(d.items()))
 
     for input in soup.find_all('select'):
