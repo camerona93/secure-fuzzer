@@ -1,5 +1,6 @@
-from requests import Session
+﻿from requests import Session
 from datetime import datetime
+import http
 
 class TestSession(Session):
     def __init__(self, dos_delay, sensitive_list):
@@ -27,4 +28,5 @@ class TestSession(Session):
                 print("!!! {url} exposed sensitive data '{data}'!".format(url=url, data=entry))
 
     def check_status_code(self, url, response):
-        pass # TODO
+        if response.status_code != http.client.OK:
+            print("!!! {url} returned non-200 status {status} ({human})".format(url=url, status=response.status_code, human=http.client.responses[request.staus_code]))
