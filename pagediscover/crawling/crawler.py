@@ -1,6 +1,7 @@
 ﻿from page import PageCollection
 from inputs.forms.forms import get_form_inputs
 from urllib.parse import urlparse, urlunsplit, urljoin
+from requests.exceptions import InvalidSchema
 
 try:
     from BeautifulSoup import BeautifulSoup, SoupStrainer
@@ -29,7 +30,10 @@ def crawl(session, start_url, pages):
 def crawl_page(session, can_url, url, todo, page):
     print ("Crawling " + url)
     page.add_alias(url)
-    req = session.get(url)
+    try:
+        req = session.get(url)
+    except InvalidSchema:
+        return
 
     print("\t" + req.url)
 

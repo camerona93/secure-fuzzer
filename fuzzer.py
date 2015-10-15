@@ -140,6 +140,8 @@ def login(session, site):
     if site == 'dvwa':
         r = session.post('http://127.0.0.1/dvwa/login.php', {'username' : 'admin', 'password' : 'password', 'Login' : 'Login'})
         assert not r.url.endswith('login.php')
+        del session.cookies['security']
+        session.cookies.set('security', 'low')
     elif site == 'bodgeit':
         # user1@thebodgeitstore.com = H:dvLUD:DI
         # admin@thebodgeitstore.com = ?yJxP?A=Kovsh6
