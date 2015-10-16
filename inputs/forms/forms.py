@@ -11,6 +11,7 @@
            'type' : 'select',
            'options' : tuple(o['value'] for o in input.find_all('option', recursive=False))
         }
+        if input.has_attr('name'): d['name'] = input['name']
 
         inputs.add(frozenset(d.items()))
 
